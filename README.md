@@ -22,32 +22,16 @@
 
 ## Features Checklist
 
-### ✅ Player Endpoints
+### ✅ Completed
 
-- [x] Get complete player data (`GET /api/v1/player/:tag`)
-  - Basic stats (name, level, trophies, arena)
-  - Clan information (if in a clan)
-  - Battle statistics
-  - Card level breakdown
-  - Tower cards collection
-  - Hero/Champion cards collection
-  - Evolution cards collection
+- [x] Player data endpoint
+- [x] Player card statistics endpoint
+- [x] Player card collections endpoint
+- [x] Health check endpoint
+- [x] Error handling
+- [x] API documentation
 
-- [x] Get player card statistics (`GET /api/v1/player/:tag/cards`)
-  - Card level breakdown (levels 9-16)
-  - Total cards at level 14+
-  - Total cards at level 15+
-
-- [x] Get player card collections (`GET /api/v1/player/:tag/collections`)
-  - Tower cards list
-  - Hero/Champion cards list
-  - Evolution cards list
-
-### ✅ System Endpoints
-
-- [x] Health check (`GET /health`)
-
-### 🔄 Planned Features
+### 🔄 Planned
 
 - [ ] Battle history endpoint
 - [ ] All cards endpoint
@@ -59,14 +43,14 @@
 
 ## Roadmap
 
-### Phase 1: Core Player Features ✅
+### Phase 1: Core Features ✅
 
 - [x] Project setup
-- [x] Player data endpoint
-- [x] Card statistics endpoint
-- [x] Card collections endpoint
+- [x] Player endpoints
 - [x] Error handling
 - [x] API documentation
+- [x] Unit tests
+- [x] CI/CD pipeline
 
 ### Phase 2: Additional Features
 
