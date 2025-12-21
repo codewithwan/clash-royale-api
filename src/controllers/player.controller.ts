@@ -3,6 +3,7 @@ import {
   PlayerBasicParser,
   PlayerCardsParser,
   PlayerCollectionsParser,
+  PlayerBattlesParser,
 } from "../parsers";
 import { PlayerCardsByLevelParser } from "../parsers/player-cards-by-level.parser";
 import type {
@@ -10,6 +11,7 @@ import type {
   PlayerBasicInfo,
   CardStats,
 } from "../types/player.types";
+import type { BattleHistory } from "../types/battle.types";
 import {
   PlayerNotFoundError,
   ParsingError,
@@ -301,6 +303,36 @@ export class PlayerController {
         body: {
           success: true,
           data: cardsByLevel,
+          meta: {
+            timestamp: new Date().toISOString(),
+            cached: false,
+            source: "royaleapi.com",
+            version: "v1",
+          },
+        },
+      };
+    } catch (error) {
+      return createErrorResponse(error as Error);
+    }
+  }
+
+  /**
+   * Handle GET /api/v1/player/:tag/battles - Battle history
+   */
+  static async handleGetPlayerBattles(tag: string) {
+    if (!validateTag(tag)) {
+      throw new InvalidTagError(tag);
+    }
+
+    try {
+      const html = await RoyaleAPIService.fetchPlayerBattlesPage(tag);
+      const battleHistory = PlayerBattlesParser.parse(html, tag);
+
+      return {
+        status: 200,
+        body: {
+          success: true,
+          data: battleHistory,
           meta: {
             timestamp: new Date().toISOString(),
             cached: false,

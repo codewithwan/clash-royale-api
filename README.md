@@ -20,9 +20,7 @@
 - **API Base URL**: `https://your-api-url.com/api/v1`
 - **Health Check**: `/health`
 
-## Features Checklist
-
-### ✅ Completed
+# Features Checklist
 
 - [x] Player data endpoint
 - [x] Player card statistics endpoint
@@ -30,49 +28,13 @@
 - [x] Health check endpoint
 - [x] Error handling
 - [x] API documentation
-
-### 🔄 Planned
-
-- [ ] Battle history endpoint
+- [x] Battle history endpoint
 - [ ] All cards endpoint
 - [ ] Meta decks endpoint
 - [ ] Clan endpoints
 - [ ] Rate limiting
 - [ ] Caching
 - [ ] API key system (optional)
-
-## Roadmap
-
-### Phase 1: Core Features ✅
-
-- [x] Project setup
-- [x] Player endpoints
-- [x] Error handling
-- [x] API documentation
-- [x] Unit tests
-- [x] CI/CD pipeline
-
-### Phase 2: Additional Features
-
-- [ ] Battle history endpoint
-- [ ] All cards endpoint
-- [ ] Rate limiting
-- [ ] Caching layer
-- [ ] Performance optimization
-
-### Phase 3: Advanced Features
-
-- [ ] Meta decks endpoint
-- [ ] Clan endpoints
-- [ ] Monitoring & analytics
-- [ ] API key system
-
-### Phase 4: Optimization
-
-- [ ] Performance tuning
-- [ ] Advanced caching strategies
-- [ ] Load testing
-- [ ] CDN integration
 
 ## Getting Started
 

@@ -78,4 +78,54 @@ export class RoyaleAPIService {
       return null;
     }
   }
+
+  /**
+   * Fetch player battles page
+   */
+  static async fetchPlayerBattlesPage(tag: string): Promise<string> {
+    const cleanTag = tag.replace("#", "").toUpperCase();
+    const url = `${BASE_URL}/player/${cleanTag}/battles`;
+
+    try {
+      const response = await fetch(url, {
+        headers: getHeaders(),
+        redirect: "follow",
+      });
+
+      if (response.status === 404) {
+        throw new PlayerNotFoundError(tag);
+      }
+
+      if (!response.ok) {
+        throw new NetworkError(
+          `Failed to fetch battles page: ${response.status} ${response.statusText}`
+        );
+      }
+
+      return await response.text();
+    } catch (error) {
+      if (
+        error instanceof PlayerNotFoundError ||
+        error instanceof NetworkError
+      ) {
+        throw error;
+      }
+
+      // Handle network/connection errors
+      if (error instanceof Error) {
+        if (
+          error.message.includes("fetch") ||
+          error.message.includes("network") ||
+          error.message.includes("ECONNREFUSED") ||
+          error.message.includes("ETIMEDOUT")
+        ) {
+          throw new NetworkError(
+            `Network error while fetching battles: ${error.message}`
+          );
+        }
+      }
+
+      throw new NetworkError("Failed to fetch battles from source");
+    }
+  }
 }

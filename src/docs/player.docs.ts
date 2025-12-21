@@ -392,3 +392,232 @@ export const getPlayerCollectionsDocs = {
     503: { description: "Service Unavailable" },
   },
 };
+
+export const getPlayerCardsByLevelDocs = {
+  tags: ["Player"],
+  summary: "Get player cards grouped by level",
+  description: `Get all player's cards organized by their level (9-16).
+
+Returns a list where each entry contains:
+- Level number (16-9, sorted descending)
+- Count of cards at that level
+- Array of card names at that level (sorted alphabetically)
+
+Useful for seeing exactly which cards a player has at each level.`,
+  responses: {
+    200: {
+      description: "Success - Cards by level retrieved",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object" as const,
+            properties: {
+              success: { type: "boolean" as const, example: true },
+              data: {
+                type: "array" as const,
+                items: {
+                  type: "object" as const,
+                  properties: {
+                    level: { type: "number" as const, example: 16 },
+                    count: { type: "number" as const, example: 5 },
+                    cards: {
+                      type: "array" as const,
+                      items: { type: "string" as const },
+                      example: [
+                        "Archers",
+                        "Firecracker",
+                        "Knight",
+                        "Mortar",
+                        "Royal Giant",
+                      ],
+                    },
+                  },
+                },
+              },
+              meta: metaSchema,
+            },
+          },
+        },
+      },
+    },
+    400: { description: "Bad Request - Invalid tag format" },
+    404: { description: "Not Found - Player not found" },
+    500: { description: "Internal Server Error" },
+    503: { description: "Service Unavailable" },
+  },
+};
+
+export const getPlayerBattlesDocs = {
+  tags: ["Player"],
+  summary: "Get player battle history",
+  description: `Get player's recent battle history including:
+- Battle result (Victory/Defeat/Draw)
+- Game mode (Ladder, 2v2, Challenge, etc.)
+- Player and opponent decks with card levels
+- Trophy changes
+- Crown scores
+- Tower information
+- Time since battle
+
+Returns the most recent battles available on RoyaleAPI.`,
+  responses: {
+    200: {
+      description: "Success - Battle history retrieved",
+      content: {
+        "application/json": {
+          schema: {
+            type: "object" as const,
+            properties: {
+              success: { type: "boolean" as const, example: true },
+              data: {
+                type: "object" as const,
+                properties: {
+                  tag: { type: "string" as const, example: "#L2QV2J2RC" },
+                  total_battles: { type: "number" as const, example: 25 },
+                  battles: {
+                    type: "array" as const,
+                    items: {
+                      type: "object" as const,
+                      properties: {
+                        result: {
+                          type: "string" as const,
+                          enum: ["Victory", "Defeat", "Draw"],
+                          example: "Victory",
+                        },
+                        mode: {
+                          type: "string" as const,
+                          example: "Ladder",
+                        },
+                        time_ago: {
+                          type: "string" as const,
+                          example: "1d 7h 10m",
+                        },
+                        player: {
+                          type: "object" as const,
+                          properties: {
+                            name: {
+                              type: "string" as const,
+                              example: "P.E.K.A",
+                            },
+                            clan: {
+                              type: "string" as const,
+                              example: "Elite Warriors",
+                            },
+                            trophies: {
+                              type: "number" as const,
+                              example: 9679,
+                            },
+                            trophy_change: {
+                              type: "number" as const,
+                              example: 30,
+                            },
+                            crowns: { type: "number" as const, example: 3 },
+                            deck: {
+                              type: "array" as const,
+                              items: {
+                                type: "object" as const,
+                                properties: {
+                                  name: {
+                                    type: "string" as const,
+                                    example: "P.E.K.K.A",
+                                  },
+                                  level: {
+                                    type: "number" as const,
+                                    example: 15,
+                                  },
+                                  is_evolution: {
+                                    type: "boolean" as const,
+                                    example: false,
+                                  },
+                                },
+                              },
+                            },
+                            tower: {
+                              type: "object" as const,
+                              properties: {
+                                level: { type: "number" as const, example: 15 },
+                              },
+                            },
+                            avg_elixir: {
+                              type: "number" as const,
+                              example: 3.6,
+                            },
+                            cycle_cost: {
+                              type: "number" as const,
+                              example: 2.1,
+                            },
+                          },
+                        },
+                        opponent: {
+                          type: "object" as const,
+                          properties: {
+                            name: {
+                              type: "string" as const,
+                              example: "Opponent",
+                            },
+                            clan: {
+                              type: "string" as const,
+                              example: "Some Clan",
+                            },
+                            trophies: {
+                              type: "number" as const,
+                              example: 9650,
+                            },
+                            trophy_change: {
+                              type: "number" as const,
+                              example: -28,
+                            },
+                            crowns: { type: "number" as const, example: 0 },
+                            deck: {
+                              type: "array" as const,
+                              items: {
+                                type: "object" as const,
+                                properties: {
+                                  name: {
+                                    type: "string" as const,
+                                    example: "Giant",
+                                  },
+                                  level: {
+                                    type: "number" as const,
+                                    example: 14,
+                                  },
+                                  is_evolution: {
+                                    type: "boolean" as const,
+                                    example: false,
+                                  },
+                                },
+                              },
+                            },
+                            tower: {
+                              type: "object" as const,
+                              properties: {
+                                level: { type: "number" as const, example: 14 },
+                              },
+                            },
+                            avg_elixir: {
+                              type: "number" as const,
+                              example: 3.8,
+                            },
+                            cycle_cost: {
+                              type: "number" as const,
+                              example: 2.3,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              meta: metaSchema,
+            },
+          },
+        },
+      },
+    },
+    400: { description: "Bad Request - Invalid tag format" },
+    404: { description: "Not Found - Player not found" },
+    500: { description: "Internal Server Error" },
+    503: { description: "Service Unavailable" },
+  },
+};
