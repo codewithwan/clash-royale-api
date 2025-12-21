@@ -45,8 +45,8 @@ export const getPlayerDataDocs = {
   description: `Get comprehensive player information including:
 - Basic stats (name, level, trophies, arena)
 - Clan information (if in a clan)
-- Battle statistics (total games, 3-crown wins)
-- Achievements/badges unlocked
+- Battle statistics (3-crown wins)
+- Achievements/badges unlocked (if any)
 - Card level breakdown (levels 9-16)
 - Tower cards collection
 - Hero/Champion cards collection  
@@ -77,15 +77,19 @@ export const getPlayerDataDocs = {
                     example: "Elite Warriors",
                     description: "Clan name, or null if not in a clan",
                   },
-                  total_games: { type: "number" as const, example: 1500 },
                   three_crown_wins: { type: "number" as const, example: 5881 },
                   achievements: {
                     type: "array" as const,
                     items: { type: "string" as const },
                     example: [
+                      "2v2",
+                      "Battle Wins",
+                      "Card Collection",
+                      "Donations",
+                      "Double Elixir",
+                      "Draft Wins",
                       "Ramp Up",
-                      "Double Elixir Wins",
-                      "Tower Touchdown",
+                      "Sudden Death",
                     ],
                     description:
                       "Optional - array of unlocked achievement/badge names",

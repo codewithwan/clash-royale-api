@@ -205,30 +205,44 @@ export class PlayerBasicParser {
     // Achievements - extract unlocked badges
     const achievements: string[] = [];
 
-    // Look for achievement/badge elements
-    const badgeElements = $("[class*='badge'], [class*='achievement']");
-    badgeElements.each((_i: number, elem: any) => {
+    // Look for badge elements with badge-icon class
+    $(".badge-icon, [class*='badge-icon']").each((_i: number, elem: any) => {
       const $elem = $(elem);
-      // Skip if it's a locked/inactive badge
-      const classes = $elem.attr("class") || "";
-      if (
-        !classes.includes("inactive") &&
-        !classes.includes("locked") &&
-        !classes.includes("grayscale")
-      ) {
-        const name =
-          $elem.attr("title") ||
-          $elem.attr("alt") ||
-          $elem.find("img").attr("alt") ||
-          "";
-        if (name && name.trim() && !achievements.includes(name.trim())) {
-          achievements.push(name.trim());
+      const $parent = $elem.parent();
+
+      // Check if badge is unlocked (data-hidden="False" on parent)
+      const isHidden = $parent.attr("data-hidden");
+      if (isHidden === "False") {
+        // Extract badge name from class like "badge-ramp-up-2" or "badge-sudden-death-3"
+        const classes = $elem.attr("class") || "";
+        const badgeMatch = classes.match(/badge-([a-z0-9-]+?)(?:-\d+)?$/i);
+
+        if (badgeMatch?.[1]) {
+          const rawName = badgeMatch[1];
+
+          // Skip if badge name is empty, just numbers, or too short
+          if (!rawName || /^\d+$/.test(rawName) || rawName.length < 2) {
+            return;
+          }
+
+          const badgeName = rawName
+            .split("-")
+            .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+
+          if (
+            badgeName &&
+            badgeName.trim().length > 1 &&
+            !achievements.includes(badgeName)
+          ) {
+            achievements.push(badgeName);
+          }
         }
       }
     });
 
     if (achievements.length > 0) {
-      data.achievements = achievements;
+      data.achievements = achievements.sort();
     }
 
     // Three crown wins

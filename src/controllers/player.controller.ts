@@ -4,6 +4,7 @@ import {
   PlayerCardsParser,
   PlayerCollectionsParser,
 } from "../parsers";
+import { PlayerCardsByLevelParser } from "../parsers/player-cards-by-level.parser";
 import type {
   PlayerData,
   PlayerBasicInfo,
@@ -80,7 +81,9 @@ export class PlayerController {
       }
 
       throw new ParsingError(
-        `Failed to process player data: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to process player data: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
       );
     }
   }
@@ -116,7 +119,9 @@ export class PlayerController {
       }
 
       throw new ParsingError(
-        `Failed to process card data: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to process card data: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
       );
     }
   }
@@ -149,7 +154,9 @@ export class PlayerController {
       }
 
       throw new ParsingError(
-        `Failed to process player basic info: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to process player basic info: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
       );
     }
   }
@@ -178,7 +185,9 @@ export class PlayerController {
       }
 
       throw new ParsingError(
-        `Failed to process collections: ${error instanceof Error ? error.message : "Unknown error"}`
+        `Failed to process collections: ${
+          error instanceof Error ? error.message : "Unknown error"
+        }`
       );
     }
   }
@@ -258,6 +267,40 @@ export class PlayerController {
               cards: collectionsData.evolution,
             },
           },
+          meta: {
+            timestamp: new Date().toISOString(),
+            cached: false,
+            source: "royaleapi.com",
+            version: "v1",
+          },
+        },
+      };
+    } catch (error) {
+      return createErrorResponse(error as Error);
+    }
+  }
+
+  /**
+   * Handle GET /api/v1/player/:tag/cards-by-level - Cards grouped by level
+   */
+  static async handleGetPlayerCardsByLevel(tag: string) {
+    if (!validateTag(tag)) {
+      throw new InvalidTagError(tag);
+    }
+
+    try {
+      const html = await RoyaleAPIService.fetchPlayerCardsPage(tag);
+      if (!html) {
+        throw new PlayerNotFoundError(tag);
+      }
+
+      const cardsByLevel = PlayerCardsByLevelParser.parse(html);
+
+      return {
+        status: 200,
+        body: {
+          success: true,
+          data: cardsByLevel,
           meta: {
             timestamp: new Date().toISOString(),
             cached: false,
