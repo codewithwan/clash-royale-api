@@ -6,7 +6,7 @@ export interface PlayerBasicInfo {
   trophies?: number;
   best_trophies?: number;
   arena?: number;
-  clan?: string;
+  clan: string | null;
   total_games?: number;
   three_crown_wins?: number;
   achievements?: string[];
@@ -50,7 +50,7 @@ export interface PlayerData {
   trophies?: number;
   best_trophies?: number;
   arena?: number;
-  clan?: string;
+  clan: string | null;
   win_rate?: number;
   total_games?: number;
   three_crown_wins?: number;

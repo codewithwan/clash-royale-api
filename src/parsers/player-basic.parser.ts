@@ -34,6 +34,7 @@ export class PlayerBasicParser {
 
     const data: PlayerBasicInfo = {
       tag: `#${tag.replace("#", "").toUpperCase()}`,
+      clan: null,
     };
 
     // Name from title
@@ -172,7 +173,9 @@ export class PlayerBasicParser {
     }
 
     // Clan - try multiple methods
-    // Clan - properly handle "Not in Clan"
+    // Always set clan field (null if not in clan)
+    data.clan = null;
+
     if (!text.includes("Not in Clan")) {
       const clanElement = $(".clan_name, [class*='clan']").first();
       if (clanElement.length > 0) {

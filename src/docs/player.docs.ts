@@ -52,7 +52,7 @@ export const getPlayerDataDocs = {
 - Hero/Champion cards collection  
 - Evolution cards collection
 
-**Note:** All card collections only include unlocked cards. Fields like 'clan' and 'achievements' are optional and only appear if data is available.`,
+**Note:** All card collections only include unlocked cards. The 'clan' field is always present (null if not in a clan).`,
   responses: {
     200: {
       description: "Success - Player data retrieved",
@@ -73,9 +73,9 @@ export const getPlayerDataDocs = {
                   arena: { type: "number" as const, example: 23 },
                   clan: {
                     type: "string" as const,
+                    nullable: true,
                     example: "Elite Warriors",
-                    description:
-                      "Optional - only present if player is in a clan",
+                    description: "Clan name, or null if not in a clan",
                   },
                   total_games: { type: "number" as const, example: 1500 },
                   three_crown_wins: { type: "number" as const, example: 5881 },

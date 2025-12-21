@@ -26,6 +26,21 @@ describe("PlayerBasicParser", () => {
     expect(result).not.toBeNull();
     expect(result?.tag).toBe("#L2QV2J2RC");
     expect(result?.name).toBe("TestPlayer");
+    expect(result?.clan).toBeDefined();
+  });
+
+  it("should always include clan field (null if not in clan)", () => {
+    const htmlNoClan = `<html><head><title>TestPlayer #L2QV2J2RC</title></head><body><div>Not in Clan</div></body></html>`;
+    const result = PlayerBasicParser.parse(htmlNoClan, "L2QV2J2RC");
+    
+    expect(result?.clan).toBe(null);
+  });
+
+  it("should set clan to null when player is not in clan", () => {
+    const html = `<html><head><title>TestPlayer #L2QV2J2RC</title></head><body></body></html>`;
+    const result = PlayerBasicParser.parse(html, "L2QV2J2RC");
+    
+    expect(result?.clan).toBe(null);
   });
 
   it("should handle tag with # prefix", () => {
