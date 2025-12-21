@@ -8,7 +8,7 @@ on:
 
 jobs:
   test:
-    name: Test (${{ github.event_name }})
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
@@ -24,49 +24,7 @@ jobs:
         run: bun install
 
       - name: Run tests
-        id: test
-        run: |
-          set +e
-          TEST_OUTPUT=$(bun test 2>&1)
-          TEST_EXIT=$?
-          echo "$TEST_OUTPUT"
-          
-          # Extract test count from output (format: "30 pass")
-          TEST_COUNT=$(echo "$TEST_OUTPUT" | grep -oE '[0-9]+ pass' | grep -oE '[0-9]+' | head -1 || echo "0")
-          TEST_FAIL=$(echo "$TEST_OUTPUT" | grep -oE '[0-9]+ fail' | grep -oE '[0-9]+' | head -1 || echo "0")
-          
-          echo "count=$TEST_COUNT" >> $GITHUB_OUTPUT
-          echo "fail=$TEST_FAIL" >> $GITHUB_OUTPUT
-          echo "::notice title=Test Results::$TEST_COUNT tests passing"
-          
-          exit $TEST_EXIT
-
-      - name: Display test results
-        if: always()
-        run: |
-          TEST_COUNT="${{ steps.test.outputs.count }}"
-          TEST_FAIL="${{ steps.test.outputs.fail }}"
-          EVENT_NAME="${{ github.event_name }}"
-          
-          if [ -z "$TEST_COUNT" ]; then
-            TEST_COUNT="0"
-          fi
-          if [ -z "$TEST_FAIL" ]; then
-            TEST_FAIL="0"
-          fi
-          
-          # Display in job annotation (will show in job name area)
-          echo "::notice title=CI / Test ($EVENT_NAME)::($TEST_COUNT/$TEST_COUNT) tests passing"
-          
-          # Add to workflow summary
-          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**CI / Test ($EVENT_NAME) ($TEST_COUNT/$TEST_COUNT)**" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Passed: $TEST_COUNT" >> $GITHUB_STEP_SUMMARY
-          if [ "$TEST_FAIL" != "0" ]; then
-            echo "- Failed: $TEST_FAIL" >> $GITHUB_STEP_SUMMARY
-          fi
+        run: bun test
 
       - name: Run tests with coverage
         run: bun test --coverage
