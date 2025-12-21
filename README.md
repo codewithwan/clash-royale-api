@@ -1,5 +1,7 @@
 # Royale API Free
 
+![CI / Test](https://github.com/codewithwan/clash-royale-api/actions/workflows/ci.yml/badge.svg)
+
 > Free, open-source Clash Royale API - No authentication required
 
 ## Overview
