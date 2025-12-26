@@ -172,55 +172,65 @@ export class PlayerBasicParser {
       if (arena) data.arena = arena;
     }
 
-    // Clan - try multiple methods
-    // Always set clan field (null if not in clan)
+    // Clan - simple string or null
     data.clan = null;
 
-    if (!text.includes("Not in Clan")) {
-      const clanElement = $(".clan_name, [class*='clan']").first();
-      if (clanElement.length > 0) {
-        const clanName = clanElement.text().trim();
-        if (
-          clanName &&
-          clanName.length > 2 &&
-          !clanName.toLowerCase().includes("not in")
-        ) {
+    // Skip if player not in clan
+    if (text.includes("Not in Clan") || text.includes("No Clan")) {
+      data.clan = null;
+    } else {
+      // Method 1: Use the correct selector - clan name is in .ui.header.item a[href^="/clan/"]
+      const clanNameLink = $(
+        '.ui.horizontal.divided.list .ui.header.item a[href^="/clan/"]'
+      ).first();
+      if (clanNameLink.length > 0) {
+        const clanName = clanNameLink.text().trim();
+        if (clanName && clanName.length > 0) {
           data.clan = clanName;
         }
       }
 
+      // Method 2: Fallback - any link to clan page that has text
+      if (!data.clan) {
+        const clanLinks = $('a[href^="/clan/"]');
+        clanLinks.each((_i: number, elem: any) => {
+          const $link = $(elem);
+          const linkText = $link.text().trim();
+          // Skip empty links and image links
+          if (linkText && linkText.length > 0 && !$link.hasClass("image")) {
+            data.clan = linkText;
+            return false; // break loop
+          }
+        });
+      }
+
+      // Method 3: Text matching fallback
       if (!data.clan) {
         const clanMatch = text.match(
-          /(?:Clan|Member of)[:\s]*([^\n]+?)(?:\n|Role|Donations)/
+          /(?:Clan|Member of)[:\s]*([^\n]+?)(?:\n|Role|Donations|Member|$)/i
         );
         if (clanMatch?.[1]) {
           const clan = clanMatch[1].trim();
-          if (clan.length > 2 && !clan.toLowerCase().includes("not in")) {
+          if (clan.length > 0 && !clan.toLowerCase().includes("not in")) {
             data.clan = clan;
           }
         }
       }
     }
 
-    // Achievements - extract unlocked badges
     const achievements: string[] = [];
 
-    // Look for badge elements with badge-icon class
     $(".badge-icon, [class*='badge-icon']").each((_i: number, elem: any) => {
       const $elem = $(elem);
       const $parent = $elem.parent();
 
-      // Check if badge is unlocked (data-hidden="False" on parent)
       const isHidden = $parent.attr("data-hidden");
       if (isHidden === "False") {
-        // Extract badge name from class like "badge-ramp-up-2" or "badge-sudden-death-3"
         const classes = $elem.attr("class") || "";
         const badgeMatch = classes.match(/badge-([a-z0-9-]+?)(?:-\d+)?$/i);
 
         if (badgeMatch?.[1]) {
           const rawName = badgeMatch[1];
-
-          // Skip if badge name is empty, just numbers, or too short
           if (!rawName || /^\d+$/.test(rawName) || rawName.length < 2) {
             return;
           }
